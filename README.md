@@ -4,7 +4,7 @@ A repository that contains all project files for the PGS Careers Convention.
  
 
 ## Live URL
-We will be Digital Ocean's App platform to allow us to host this externally at the following URL [https://careers-convention-ojkd5.ondigitalocean.app/](https://careers-convention-ojkd5.ondigitalocean.app/) that auto-updates the source code from this repository.
+We will be Digital Ocean's App platform to allow us to host this externally at the following URL [https://careers-convention-77yqn.ondigitalocean.app/(https://careers-convention-77yqn.ondigitalocean.app/) that auto-updates the source code from this repository.
 
 
 ## CSS 

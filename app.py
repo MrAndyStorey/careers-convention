@@ -9,11 +9,13 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 
 
-# create the flask application object
+# create the flask application object.
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-# create/connect to the db
+# get the ADMIN url from the environment variables.
+
+# create/connect to the db.
 _cwd = dirname(abspath(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + join(_cwd, 'flask-database.db')
 app.config['SQLALCHEMY_ECHO'] = True
@@ -54,6 +56,7 @@ class Delegate(db.Model):
     def __str__(self):
         return self.name
 
+# Local function used below.
 def returnOrderByField(querystringParameter):
   #Let's see if they have asked for a specific sort 
   if querystringParameter=="location":
@@ -73,7 +76,6 @@ def get_about():
 @app.route('/acknowledgements')
 def get_acknowledgements():
   return render_template('acknowledgements.html', title='Acknowledgements of the Convention', description='')
-
 
 @app.route("/delegates/", defaults={"internalURL": None})
 @app.route('/delegates/<string:internalURL>')
@@ -125,4 +127,3 @@ if __name__ == '__main__':
     db.create_all(app=app)
     db.init_app(app=app)
     app.run()
-    #app.run(debug=True)
