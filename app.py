@@ -4,17 +4,9 @@
 from os import name
 from os.path import abspath, dirname, join
 
-import time
-import logging
-import sqlite3
-from sqlite3 import Error
-
-import requests
-
-from flask import flash, Flask, Markup, redirect, render_template, url_for, request
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
-
 
 
 # create the flask application object
