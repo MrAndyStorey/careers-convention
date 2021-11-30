@@ -17,4 +17,12 @@ You'll need to install the following libraries for this to work:
 ```
 pip3 install flask
 pip3 install flask-sqlalchemy
+pip3 install python-dotenv
+```
+
+
+## Environment variables
+This project includes an example of a .env files that you need to create to allow you to acccess the admin URL.  You need to fill out your own details BEFORE copying it to .env.
+```
+cp .env.local .env
 ```

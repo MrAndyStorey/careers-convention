@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 
 # local imports
-from os import name
+import os
 from os.path import abspath, dirname, join
 
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 
+from dotenv import load_dotenv
 
 # create the flask application object.
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-# get the ADMIN url from the environment variables.
+# get the ADMIN url from the environment variables from the .env file stored locally.
+load_dotenv()
+adminURL = os.getenv("ADMIN_URL")
+
 
 # create/connect to the db.
 _cwd = dirname(abspath(__file__))
@@ -64,7 +68,8 @@ def returnOrderByField(querystringParameter):
   else:
     return Delegate.name
 
-# Every page that is on the website will need an app.route defined here
+# Every page that is on the website will need an app.route defined here.
+# Most of them are pretty simple - they just render a template from the templates directory with very little effort.
 @app.route('/')
 def get_home():
   return render_template('home.html', title='Home', description='This is the meta-description.')
@@ -116,6 +121,24 @@ def get_map():
 @app.route('/news')
 def get_news():
   return render_template('news.html', title='Latest news from the Careers Convention', description='')
+
+#*******************************************************************************
+# These are the ADMIN URLS that are not public
+#*******************************************************************************
+@app.route(adminURL)
+def get_adminHome():
+  return render_template('admin.html', title='Admin: Home', description='')
+
+@app.route(adminURL + '/categories')
+def get_adminCategories():
+  query = Category.query.filter(Category.id >= 0).order_by(Category.name)
+  return render_template('adminCategories.html', title='Admin: Categories', description='', rows=query.all())
+
+@app.route(adminURL + '/delegates')
+def get_adminDelegates():
+  query = Delegate.query.filter(Delegate.id >= 0).order_by(Delegate.name)
+  return render_template('adminDelegates.html', title='Admin: Delegates', description='', rows=query.all())
+#*******************************************************************************
 
 @app.errorhandler(404)
 def page_not_found(error):

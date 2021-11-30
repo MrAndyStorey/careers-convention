@@ -1,0 +1,17 @@
+{% extends "template.html" %}
+{% block content %}
+<h1>Admin: Categories</h1>
+<p>This page allows you to create, read, update or delete (CRUD) the <b>categories</b> used on this website.</p>
+<p>&nbsp;</p>
+<p><table width="100%">
+    <tr><th>Name</th></tr>
+    {% for row in rows %}
+    <tr>
+           <td><a href="./categories/{{row["id"]}}">{{row["name"]}}</a></td>
+    </tr>
+ {% endfor %}
+</table></p>
+
+<p>Go back to the <a href="./">admin home page</a>.</p>
+
+{% endblock %}
