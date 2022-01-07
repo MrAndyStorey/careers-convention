@@ -4,7 +4,7 @@
 import os
 from os.path import abspath, dirname, join
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 
@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 # create the flask application object.
 app = Flask(__name__)
 app.config.from_object(__name__)
+app.config['SECRET_KEY'] = "skdjfgklsdflgkjsdflkgjabfglkjdsbflgkjsbdfgkl"
 
 # get the ADMIN url from the environment variables from the .env file stored locally.
 load_dotenv()
@@ -128,6 +129,26 @@ def get_news():
 @app.route(adminURL)
 def get_adminHome():
   return render_template('admin.html', title='Admin: Home', description='')
+
+@app.route(adminURL + '/categories/<int:pkid>', methods = ['GET', 'POST'])
+def get_adminCategoriesInsert(pkid):
+  if request.method == 'GET':
+    if pkid > 0:
+      query = Category.query.filter_by(id=pkid).first()
+      return render_template('adminCategoriesEdit.html', title='Admin: Categories: Edit', description='', rows=query)
+    else:
+      return render_template('adminCategoriesEdit.html', title='Admin: Categories: Add', description='')
+
+  if request.method == 'POST':
+    if pkid > 0:
+      flash('Category was successfully updated.')
+    else:
+      cat = Category(request.form['name'])
+      db.session.add(cat)
+      db.session.commit()
+      flash('Category was successfully added.')
+    return redirect(url_for('get_adminCategories'))
+
 
 @app.route(adminURL + '/categories')
 def get_adminCategories():

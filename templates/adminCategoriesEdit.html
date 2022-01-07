@@ -1,0 +1,15 @@
+{% extends "template.html" %}
+{% block content %}
+<h1>{{ title }}</h1>
+<form action="{{ request.path }}" id="formCategorySubmission" method="POST">
+       <p><span>Name</span><br /><input type="text" size="64" name="name" placeholder="Enter a category name" id="name" /></p>
+
+       <p><button type="submit">Save</button></p>
+</form>
+<p>&nbsp;</p>
+
+<p>Go back to the <a href="../categories">admin categories page</a>.</p>
+
+<p>Go back to the <a href="../">admin home page</a>.</p>
+
+{% endblock %}
