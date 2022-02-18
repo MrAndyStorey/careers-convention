@@ -8,16 +8,13 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 
-from dotenv import load_dotenv
-
 # create the flask application object.
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = "skdjfgklsdflgkjsdflkgjabfglkjdsbflgkjsbdfgkl"
 
 # get the ADMIN url from the environment variables from the .env file stored locally.
-load_dotenv()
-adminURL = os.getenv("ADMIN_URL")
+adminURL = "/1379b0159b5bccea882c040dee6b59b6970cc5d9e/"
 
 
 # create/connect to the db.
