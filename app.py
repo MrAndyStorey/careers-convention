@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
 # local imports
-import os
-from os.path import abspath, dirname, join
+#import os
+#from os.path import abspath, dirname
 
+from itertools import cycle
+from logging.config import IDENTIFIER
+from operator import truediv
+from tracemalloc import start
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
@@ -18,8 +22,9 @@ adminURL = "/1379b0159b5bccea882c040dee6b59b6970cc5d9e/"
 
 
 # create/connect to the db.
-_cwd = dirname(abspath(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + join(_cwd, 'flask-database.db')
+#_cwd = dirname(abspath(__file__))
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + join(_cwd, 'flask-database.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://doadmin:pxTKuPxJgluouWIZ@db-postgresql-lon1-79437-do-user-1903022-0.b.db.ondigitalocean.com:25060/defaultdb?sslmode=require'
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -127,23 +132,37 @@ def get_news():
 def get_adminHome():
   return render_template('admin.html', title='Admin: Home', description='')
 
+@app.route(adminURL + '/categories/<int:pkid>/delete/', methods = ['POST'])
+def get_adminCategoriesDelete(pkid):
+  if pkid > 0:
+    deleteCat = Category.query.filter_by(id=pkid).first()
+    db.session.delete(deleteCat)
+    db.session.commit()
+    flash('Category (#' + str(pkid) + ') was successfully deleted.')
+    return redirect(url_for('get_adminCategories'))
+
+
 @app.route(adminURL + '/categories/<int:pkid>', methods = ['GET', 'POST'])
-def get_adminCategoriesInsert(pkid):
+def get_adminCategoriesInsertUodate(pkid):
   if request.method == 'GET':
     if pkid > 0:
       query = Category.query.filter_by(id=pkid).first()
-      return render_template('adminCategoriesEdit.html', title='Admin: Categories: Edit', description='', rows=query)
+      return render_template('adminCategoriesEdit.html', title='Admin: Categories: Edit', description='', catPKID=pkid,catName=query.name)
     else:
-      return render_template('adminCategoriesEdit.html', title='Admin: Categories: Add', description='')
+      return render_template('adminCategoriesEdit.html', title='Admin: Categories: Add', description='', catPKID=0,catName="")
 
   if request.method == 'POST':
     if pkid > 0:
-      flash('Category was successfully updated.')
+      updateCat = Category.query.filter_by(id=pkid).first()
+      updateCat.name = request.form['name']
+      db.session.commit()
+
+      flash('Category (#' + str(updateCat.id) + ') was successfully updated.')
     else:
-      cat = Category(request.form['name'])
+      cat = Category(name=request.form['name'])
       db.session.add(cat)
       db.session.commit()
-      flash('Category was successfully added.')
+      flash('Category (#' + str(cat.id) + ') was successfully added.')
     return redirect(url_for('get_adminCategories'))
 
 
@@ -152,10 +171,12 @@ def get_adminCategories():
   query = Category.query.filter(Category.id >= 0).order_by(Category.name)
   return render_template('adminCategories.html', title='Admin: Categories', description='', rows=query.all())
 
+
 @app.route(adminURL + '/delegates')
 def get_adminDelegates():
   query = Delegate.query.filter(Delegate.id >= 0).order_by(Delegate.name)
   return render_template('adminDelegates.html', title='Admin: Delegates', description='', rows=query.all())
+
 #*******************************************************************************
 
 @app.errorhandler(404)
