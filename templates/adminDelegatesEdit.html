@@ -1,0 +1,39 @@
+{% extends "template.html" %}
+{% block content %}
+<h1>{{ title }}</h1>
+
+<form action="{{ request.path }}" id="formDelegateSubmission" method="POST">
+       <p><span>Name</span><br /><input required type="text" size="64" name="name" placeholder="Enter the delegate name" id="name" value="{{ passedRecord["name"] }}" /></p>
+
+       <p><span>Location</span><br /><input type="text" size="4" name="location" placeholder="000" id="location" value="{{ passedRecord["location"] }}" /></p>
+
+       <p><span>Internal&nbsp;</span><br /><input required type="text" size="32" name="internalurl" placeholder="Our internal URL eg. lower-case-with-dashes." id="internalurl" value="{{ passedRecord["internalurl"] }}" />&nbsp;&nbsp;&nbsp;<button type="button" onClick="createURLSlug()">Create SLUG</button></p>
+
+       <p><span>Website</span><br /><input type="text" size="64" name="externalurl" placeholder="Enter the delegate's website address." id="externalurl" value="{{ passedRecord["externalurl"] }}" /></p>
+
+       <p><span>Description</span><br /><textarea rows="6" cols="60" id="description" name="description" placeholder="Enter a summary of the delegate's activities.">{{ passedRecord["description"] }}</textarea></p>
+
+       <p><span>Category</span><br /><select id="category_id" name="category_id"><!--<option value="0">None</option>-->
+              {% for row in catRows %}
+              <option value="{{row["id"]}}"{% if passedRecord["category_id"] == row["id"] %} selected{% endif %}>{{row["name"]}}</option>
+              {% endfor %}
+       </select></p>
+
+       <p><input type="hidden" name="id" value="{{ delPKID }}" /></p>
+       <p><button type="submit">Save</button></p>
+</form>
+<p>&nbsp;</p>
+
+{% if delPKID > 0 %}
+<form action="{{ request.path }}/delete/" id="formDelegateDelete" method="POST">
+       <p><input type="hidden" name="id" value="{{ delPKID }}" /></p>
+       <p><button type="submit">Delete</button></p>
+</form>
+<p>&nbsp;</p>
+{% endif %}
+
+<p>Go back to the <a href="../delegates">admin delegates page</a>.</p>
+
+<p>Go back to the <a href="../">admin home page</a>.</p>
+
+{% endblock %}

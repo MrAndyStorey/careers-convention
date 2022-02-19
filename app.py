@@ -147,9 +147,14 @@ def get_adminCategoriesInsertUodate(pkid):
   if request.method == 'GET':
     if pkid > 0:
       query = Category.query.filter_by(id=pkid).first()
-      return render_template('adminCategoriesEdit.html', title='Admin: Categories: Edit', description='', catPKID=pkid,catName=query.name)
+
+      #This is here to pass the number of FK records that reference this category_ID.
+      #We don't won't to allow the user to delete a record if it's related.
+      subQueryCount = Delegate.query.filter_by(category_id=pkid).count()
+
+      return render_template('adminCategoriesEdit.html', title='Admin: Categories: Edit', description='', catPKID=pkid, passedRecord=query, FKCount=subQueryCount)
     else:
-      return render_template('adminCategoriesEdit.html', title='Admin: Categories: Add', description='', catPKID=0,catName="")
+      return render_template('adminCategoriesEdit.html', title='Admin: Categories: Add', description='', catPKID=0, passedRecord=None)
 
   if request.method == 'POST':
     if pkid > 0:
@@ -170,6 +175,48 @@ def get_adminCategoriesInsertUodate(pkid):
 def get_adminCategories():
   query = Category.query.filter(Category.id >= 0).order_by(Category.name)
   return render_template('adminCategories.html', title='Admin: Categories', description='', rows=query.all())
+
+
+
+@app.route(adminURL + '/delegates/<int:pkid>', methods = ['GET', 'POST'])
+def get_adminDelegatesInsertUodate(pkid):
+  if request.method == 'GET':
+    #These rows are used to build the Category Drop Down List on the Delegate Page
+    catListContent = Category.query.filter(Category.id >= 0).order_by(Category.name)
+
+    if pkid > 0:
+      query = Delegate.query.filter_by(id=pkid).first()
+      return render_template('adminDelegatesEdit.html', title='Admin: Delegates: Edit', description='', catRows=catListContent.all(), delPKID=pkid, passedRecord=query)
+    else:
+      return render_template('adminDelegatesEdit.html', title='Admin: Delegates: Add', description='', catRows=catListContent.all(), delPKID=0, passedRecord=None)
+
+  if request.method == 'POST':
+    if pkid > 0:
+      updateDel = Delegate.query.filter_by(id=pkid).first()
+      updateDel.name = request.form['name']
+      updateDel.location = request.form['location']
+      updateDel.description = request.form['description']
+      updateDel.internalurl = request.form['internalurl']
+      updateDel.externalurl = request.form['externalurl']
+      updateDel.category_id = request.form['category_id']
+      db.session.commit()
+      flash('Delegate (#' + str(updateDel.id) + ') was successfully updated.')
+    else:
+      insertDel = Delegate(name=request.form['name'],location = request.form['location'],description = request.form['description'],internalurl = request.form['internalurl'],externalurl = request.form['externalurl'],category_id=request.form['category_id'])
+      db.session.add(insertDel)
+      db.session.commit()
+      flash('Delegate (#' + str(insertDel.id) + ') was successfully added.')
+    return redirect(url_for('get_adminDelegates'))
+
+
+@app.route(adminURL + '/delegates/<int:pkid>/delete/', methods = ['POST'])
+def get_adminDelegatesDelete(pkid):
+  if pkid > 0:
+    deleteDel = Delegate.query.filter_by(id=pkid).first()
+    db.session.delete(deleteDel)
+    db.session.commit()
+    flash('Delegate (#' + str(pkid) + ') was successfully deleted.')
+    return redirect(url_for('get_adminDelegates'))
 
 
 @app.route(adminURL + '/delegates')

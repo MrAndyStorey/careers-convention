@@ -1,8 +1,9 @@
 {% extends "template.html" %}
 {% block content %}
 <h1>{{ title }}</h1>
+
 <form action="{{ request.path }}" id="formCategorySubmission" method="POST">
-       <p><span>Name</span><br /><input type="text" size="64" name="name" placeholder="Enter a category name" id="name" value="{{ catName }}" /></p>
+       <p><span>Name</span><br /><input required type="text" size="64" name="name" placeholder="Enter a category name" id="name" value="{{ passedRecord["name"] }}" /></p>
        <p><input type="hidden" name="id" value="{{ catPKID }}" /></p>
        <p><button type="submit">Save</button></p>
 </form>
@@ -11,7 +12,11 @@
 {% if catPKID > 0 %}
 <form action="{{ request.path }}/delete/" id="formCategoryDelete" method="POST">
        <p><input type="hidden" name="id" value="{{ catPKID }}" /></p>
-       <p><button type="submit">Delete</button></p>
+       {% if FKCount > 0 %}
+              <p><button type="submit" disabled>Delete</button></p>
+       {% else %}
+              <p><button type="submit">Delete</button></p>
+       {% endif %}
 </form>
 <p>&nbsp;</p>
 {% endif %}

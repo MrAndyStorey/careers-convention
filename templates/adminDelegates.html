@@ -3,6 +3,11 @@
 <h1>Admin: Delegates</h1>
 <p>This page allows you to create, read, update or delete (CRUD) the <b>delegates</b> used on this website.</p>
 <p><strong><a href="./delegates/0">Add a Delegate</a></strong></p>
+
+{% for message in get_flashed_messages() %}
+<p><em>{{ message }}</em></p>
+{% endfor %}
+
 <p><table width="100%">
     <tr><th>Name</th><th>Location</th><th>Category</th></tr>
     {% for row in rows %}
