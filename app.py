@@ -4,14 +4,12 @@
 #import os
 #from os.path import abspath, dirname
 
-from itertools import cycle
-from logging.config import IDENTIFIER
-from operator import truediv
-from tracemalloc import start
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 import json
+from datetime import datetime
+import requests 
 
 # create the flask application object.
 app = Flask(__name__)
@@ -60,6 +58,28 @@ class Delegate(db.Model):
 
     def __repr__(self):
         return '<Delegate {:d} {}>'.format(self.id, self.name)
+
+    def __str__(self):
+        return self.name
+
+class Feedback(db.Model):
+    __tablename__ = 'feedback'
+
+    id = db.Column(db.Integer, primary_key=True)
+    created = db.Column(db.DateTime,default=datetime.now)
+    ipaddr = db.Column(db.String)
+    description = db.Column(db.String)
+    q1 = db.Column(db.Integer)
+    q2 = db.Column(db.Integer)
+    q3 = db.Column(db.Integer)
+    q4 = db.Column(db.Integer)
+    q5 = db.Column(db.Integer)
+    q6 = db.Column(db.Integer)
+    q7 = db.Column(db.Integer)
+    q8 = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '<Feedback {:d} {}>'.format(self.id, self.ipaddr)
 
     def __str__(self):
         return self.name
@@ -114,12 +134,19 @@ def get_delegate(internalURL):
   # In this instance, the meta title and description values must come from the database.
   return render_template('delegate.html', title='', description='', row=query)
 
-@app.route('/feedback')
+@app.route('/feedback', methods = ['GET', 'POST'])
 def get_feedback():
-  #TO DO - Create the form itself.
-  #TO DO - Create a new route to send the form contents to the database.
+  if request.method == 'GET':
+    return render_template('feedback.html', title='Feedback Form', description='', host=requests.get('http://ipinfo.io/json').json()['ip'])
 
-  return render_template('feedback.html', title='Feedback Form', description='')
+  if request.method == 'POST':
+      feedbackForm = Feedback(ipaddr=request.form['ipaddr'],description=request.form['description'],q1=request.form['q1'],q2=request.form['q2'],q3=request.form['q3'],q4=request.form['q4'],q5=request.form['q5'])
+      db.session.add(feedbackForm)
+      db.session.commit()
+
+      flash('Your feedback has been successfuly recieved.')
+      return render_template('feedback.html', title='Feedback Form', description='')
+
 
 @app.route('/map')
 def get_map():
@@ -179,6 +206,12 @@ def get_adminCategoriesInsertUodate(pkid):
 def get_adminCategories():
   query = Category.query.filter(Category.id >= 0).order_by(Category.name)
   return render_template('adminCategories.html', title='Admin: Categories', description='', rows=query.all())
+
+
+@app.route(adminURL + '/feedback')
+def get_adminFeedback():
+  query = Feedback.query.filter(Feedback.id >= 0).order_by(Feedback.created)
+  return render_template('adminFeedback.html', title='Admin: Feedback', description='', rows=query.all())
 
 
 

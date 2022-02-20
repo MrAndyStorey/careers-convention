@@ -1,6 +1,70 @@
 {% extends "template.html" %}
 {% block content %}
 
-<p>Feedback Form</p>
+
+<form action="{{ request.path }}" id="formFeedbackSubmission" method="POST">
+    <h1>Attendee Feedback Form</h1>
+
+    {% for message in get_flashed_messages() %}
+    <p><em>{{ message }}</em></p>
+    {% endfor %}
+
+    <p><span>I was able to find the stand I wanted:</span><br />
+        <select name="q1" id="q1" required>
+            <option value="">-</option>
+            <option value="1">Strongly agree</option>
+            <option value="2">Agree</option>
+            <option value="3">Neither agree or disagree</option>
+            <option value="4">Disagree</option>
+            <option value="5">Strongly disagree</option>
+        </select></p>
+
+    <p><span>There was a good selection of stands:</span><br />
+        <select name="q2" id="q2" required>
+            <option value="">-</option>
+            <option value="1">Strongly agree</option>
+            <option value="2">Agree</option>
+            <option value="3">Neither agree or disagree</option>
+            <option value="4">Disagree</option>
+            <option value="5">Strongly disagree</option>
+        </select></p>
+
+    <p><span>The event was well organised:</span><br />
+        <select name="q3" id="q3" required>
+            <option value="">-</option>
+            <option value="1">Strongly agree</option>
+            <option value="2">Agree</option>
+            <option value="3">Neither agree or disagree</option>
+            <option value="4">Disagree</option>
+            <option value="5">Strongly disagree</option>
+        </select></p>
+
+    <p><span>The event duration was just right:</span><br />
+        <select name="q4" id="q4" required>
+            <option value="">-</option>
+            <option value="1">Strongly agree</option>
+            <option value="2">Agree</option>
+            <option value="3">Neither agree or disagree</option>
+            <option value="4">Disagree</option>
+            <option value="5">Strongly disagree</option>
+        </select></p>
+
+    <p><span>How likely are you to recommend this event:</span><br />
+        <select name="q5" id="q5" required>
+            <option value="">-</option>
+            <option value="1">Strongly agree</option>
+            <option value="2">Agree</option>
+            <option value="3">Neither agree or disagree</option>
+            <option value="4">Disagree</option>
+            <option value="5">Strongly disagree</option>
+        </select></p>
+
+    <p><span>Suggestions for next year</span><br /><textarea cols="50" rows="5" id="description" name="description"></textarea></p>
+
+    <p><button type="submit">Submit</button></p>
+
+    <p><input type="hidden" name="ipaddr" value="{{ host }}" /></p>
+
+</form>
 
 {% endblock %}
