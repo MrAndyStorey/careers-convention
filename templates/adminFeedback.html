@@ -11,8 +11,9 @@
     <tr><th>Name</th></tr>
     {% for row in rows %}
     <tr>
-           <td>{{row["created"]}}</td>
-    </tr>
+       <td>{{row["created"]}}</td>
+       <td>{{row["ipaddr"]}}</td>
+</tr>
  {% endfor %}
 </table></p>
 <p>Go back to the <a href="./">admin home page</a>.</p>
