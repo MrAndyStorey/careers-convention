@@ -11,6 +11,7 @@ from tracemalloc import start
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
+import json
 
 # create the flask application object.
 app = Flask(__name__)
@@ -75,7 +76,10 @@ def returnOrderByField(querystringParameter):
 # Most of them are pretty simple - they just render a template from the templates directory with very little effort.
 @app.route('/')
 def get_home():
-  return render_template('home.html', title='Home', description='This is the meta-description.')
+  queryDelCount = Delegate.query.filter(Delegate.id >= 0).count()
+  queryCatCount = Category.query.filter(Category.id >= 0).count()
+
+  return render_template('home.html', title='Home', description='This is the meta-description.', countCat=queryCatCount, countDel=queryDelCount)
 
 @app.route('/about')
 def get_about():
@@ -175,6 +179,32 @@ def get_adminCategoriesInsertUodate(pkid):
 def get_adminCategories():
   query = Category.query.filter(Category.id >= 0).order_by(Category.name)
   return render_template('adminCategories.html', title='Admin: Categories', description='', rows=query.all())
+
+
+
+@app.route(adminURL + '/delegates/import', methods = ['GET', 'POST'])
+def get_adminDelegatesImport():
+  if request.method == 'GET':
+      return render_template('adminDelegatesImport.html', title='Admin: Delegates: Import', description='')
+
+  if request.method == 'POST':
+      localJSON  = json.loads(request.form['importdata'])
+
+      findCategory = Category.query.filter_by(name=localJSON["category"]).first()
+      if findCategory.id > 0:
+        localDataCategory = findCategory.id
+        localDataName = localJSON["name"]
+        localDataLocation = localJSON["location"]
+        localDataDescription = localJSON["description"]
+        localDataInternalURL = localDataName.lower().replace(" ", "-")
+        localDataExternalURL = localJSON["externalurl"]
+
+        insertDel = Delegate(name=localDataName,category_id=localDataCategory,location=localDataLocation,description=localDataDescription,internalurl=localDataInternalURL,externalurl=localDataExternalURL)
+        db.session.add(insertDel)
+        db.session.commit()
+
+        flash('Delegate (#' + str(insertDel.id) + ') was successfully added.')
+      return redirect(url_for('get_adminDelegates'))
 
 
 

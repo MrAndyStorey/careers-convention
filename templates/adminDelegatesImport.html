@@ -1,0 +1,18 @@
+{% extends "template.html" %}
+{% block content %}
+<h1>{{ title }}</h1>
+
+<form action="{{ request.path }}" id="formDelegateImport" method="POST">
+       <p><span>Please Note: Make sure any <a href="../categories">Categories have been created</a> prior to importing.</span></p>
+
+       <p><span>Description</span><br /><textarea rows="8" cols="80" id="importdata" name="importdata" placeholder="Paste the final column from the shared spareadsheet in here."></textarea></p>
+
+       <p><button type="submit">Import</button></p>
+</form>
+<p>&nbsp;</p>
+
+<p>Go back to the <a href="../delegates">admin delegates page</a>.</p>
+
+<p>Go back to the <a href="../">admin home page</a>.</p>
+
+{% endblock %}

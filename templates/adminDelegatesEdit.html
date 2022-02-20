@@ -13,7 +13,7 @@
 
        <p><span>Description</span><br /><textarea rows="6" cols="60" id="description" name="description" placeholder="Enter a summary of the delegate's activities.">{{ passedRecord["description"] }}</textarea></p>
 
-       <p><span>Category</span><br /><select id="category_id" name="category_id"><!--<option value="0">None</option>-->
+       <p><span>Category</span><br /><select id="category_id" name="category_id">
               {% for row in catRows %}
               <option value="{{row["id"]}}"{% if passedRecord["category_id"] == row["id"] %} selected{% endif %}>{{row["name"]}}</option>
               {% endfor %}

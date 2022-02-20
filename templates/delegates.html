@@ -12,7 +12,7 @@
 		<tr>
 		   	<td><a href="/delegate/{{row["internalurl"]}}">{{row["name"]}}</a></td>
 		   	<td>{{row["location"]}}</td>	
-		   	<td>{% if row["category"] != None %}
+		   	<td>{% if row["category"] != "-" %}
 		   		<a title="Click here to flter the list of delegates in the same category." href="/delegates/{{row["category"]|replace(' ', '-')}}">{{row["category"]}}</a>
 		   {% else %}
 		   		{{row["category"]}}
