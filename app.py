@@ -238,7 +238,7 @@ def get_adminFeedback(question):
       builtData = builtData + "['Disagree'," +  str(builtResponses["2"]) + "],"
       builtData = builtData + "['Strongly Disagree'," +  str(builtResponses["1"]) + "]]"
     
-  return render_template('adminFeedback.html', title='Admin: Feedback: Question ' + str(question), description='', rows=qryResponses.all(), question=question,builtData=builtData)
+  return render_template('adminFeedback.html', title='Admin: Feedback', description='', rows=qryResponses.all(), question=question,builtData=builtData)
 
 
 
