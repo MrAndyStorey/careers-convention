@@ -1,21 +1,66 @@
 {% extends "template.html" %}
 {% block content %}
+<script>
+myArray = {{ builtData | safe }}
+</script>
+
+  
 <h1>{{ title }}</h1>
-<p>This page shows you the feedback submitted via this website.</p>
+<p>This page shows you the feedback submitted via this website.<br />Click on the links below to view the responses to each question.</p>
 
 {% for message in get_flashed_messages() %}
 <p><em>{{ message }}</em></p>
 {% endfor %}
 
+<p><strong>
+    <a href="./1">Q1</a>&nbsp;&nbsp;
+    <a href="./2">Q2</a>&nbsp;&nbsp;
+    <a href="./3">Q3</a>&nbsp;&nbsp;
+    <a href="./4">Q4</a>&nbsp;&nbsp;
+    <a href="./5">Q5</a>&nbsp;&nbsp;
+    <a href="./0">Q6</a>&nbsp;&nbsp;
+</strong></p>
+
+{% if question > 0 %}
+
+
+<div id="feedbackChart" style="width:100%; max-width:800px; height:600px;"></div>
+
+<script>
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+var data = google.visualization.arrayToDataTable(myArray);
+
+var options = {
+  title:'Question {{ question }}'
+};
+
+var chart = new google.visualization.PieChart(document.getElementById('feedbackChart'));
+  chart.draw(data, options);
+}
+</script>
+
+{% else %}
+
 <p><table width="100%">
     <tr><th>Name</th></tr>
     {% for row in rows %}
-    <tr>
-       <td>{{row["created"]}}</td>
-       <td>{{row["ipaddr"]}}</td>
-</tr>
- {% endfor %}
+    {% if row["description"] | length > 0 %}
+      <tr>
+          <td>{{row["created"]}}</td>
+          <td>{{row["ipaddr"]}}</td>
+          <td>{{row["description"]}}</td>
+      </tr>
+      {% endif %}
+      {% endfor %}
 </table></p>
-<p>Go back to the <a href="./">admin home page</a>.</p>
+{% endif %}
+
+<p>Go back to the <a href="../">admin home page</a>.</p>
+
+
+
 
 {% endblock %}

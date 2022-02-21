@@ -4,6 +4,7 @@
 #import os
 #from os.path import abspath, dirname
 
+from tkinter.messagebox import QUESTION
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
@@ -208,10 +209,36 @@ def get_adminCategories():
   return render_template('adminCategories.html', title='Admin: Categories', description='', rows=query.all())
 
 
-@app.route(adminURL + '/feedback')
-def get_adminFeedback():
-  query = Feedback.query.filter(Feedback.id >= 0).order_by(Feedback.created)
-  return render_template('adminFeedback.html', title='Admin: Feedback', description='', rows=query.all())
+@app.route(adminURL + '/feedback/<int:question>')
+def get_adminFeedback(question):
+  builtData = ""
+  qryResponses = Feedback.query.filter(Feedback.id >= 0).order_by(Feedback.created)
+
+  if (question > 0):
+    builtResponses = {"5" : 0,"4" : 0,"3" : 0,"2" : 0,"1" : 0}
+
+    for response in qryResponses.all():
+      localObject = getattr(response, 'q' + str(question))
+
+      if localObject==1:
+        builtResponses["1"] = builtResponses["1"] + 1
+      elif localObject==2:
+        builtResponses["2"] = builtResponses["2"] + 1
+      elif localObject==3:
+        builtResponses["3"] = builtResponses["3"] + 1
+      elif localObject==4:
+        builtResponses["4"] = builtResponses["4"] + 1
+      elif localObject==5:
+        builtResponses["5"] = builtResponses["5"] + 1
+
+      builtData = "[['Question','Responses'],"
+      builtData = builtData + "['Strongly Agree'," +  str(builtResponses["5"]) + "],"
+      builtData = builtData + "['Agree'," +  str(builtResponses["4"]) + "],"
+      builtData = builtData + "['Neither agree or disagree'," +  str(builtResponses["3"]) + "],"
+      builtData = builtData + "['Disagree'," +  str(builtResponses["2"]) + "],"
+      builtData = builtData + "['Strongly Disagree'," +  str(builtResponses["1"]) + "]]"
+    
+  return render_template('adminFeedback.html', title='Admin: Feedback: Question ' + str(question), description='', rows=qryResponses.all(), question=question,builtData=builtData)
 
 
 
@@ -295,7 +322,7 @@ def page_not_found(error):
 
 # start the server with the 'run()' method - debug=True for testing - NOT LIVE
 if __name__ == '__main__':
-    app.debug = True
+    app.debug = False
     db.create_all(app=app)
     db.init_app(app=app)
     app.run()
