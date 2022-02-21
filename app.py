@@ -4,7 +4,6 @@
 #import os
 #from os.path import abspath, dirname
 
-from tkinter.messagebox import QUESTION
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
