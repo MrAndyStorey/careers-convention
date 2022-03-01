@@ -10,6 +10,8 @@ from sqlalchemy.orm import relationship
 import json
 from datetime import datetime
 import requests 
+from sqlalchemy.sql.expression import cast
+from sqlalchemy import Integer
 
 # create the flask application object.
 app = Flask(__name__)
@@ -88,9 +90,13 @@ class Feedback(db.Model):
 def returnOrderByField(querystringParameter):
   #Let's see if they have asked for a specific sort 
   if querystringParameter=="location":
-    return Delegate.location
+    return cast(Delegate.location, Integer)
   else:
     return Delegate.name
+
+
+
+
 
 # Every page that is on the website will need an app.route defined here.
 # Most of them are pretty simple - they just render a template from the templates directory with very little effort.
@@ -116,6 +122,7 @@ def get_delegates_filtered(internalURL):
   if internalURL is None:
     #Simply return all the delegate records - sorted if necessary
     query = Delegate.query.filter(Delegate.id >= 0).order_by(returnOrderByField(request.args.get('sort', default = 'name', type = str)))
+
     builtDescription=""
     filteredView=0
   else:
