@@ -9,7 +9,7 @@
 		<!-- We need allow the visitor to sort by the columnns (apart from description as it doesn't make sense and you can filter by category.) -->
 		<p><table class="table table-bordered">
 			<thead>
-				<tr><th><a href="{{request.path}}?sort=name">Name</a></th><th><a href="{{request.path}}?sort=location">Location</a></th><th>Category</th><th>Description</th></tr>
+				<tr><th><a href="{{request.path}}?sort=name">Name</a></th><th><a href="{{request.path}}?sort=location">Location</a></th><th>Category</th><th class="d-none d-sm-table-cell">Description</th></tr>
 			</thead>
 			{% for row in rows %}
 			<tr>
@@ -21,7 +21,7 @@
 					{{row["category"]}}
 			{% endif %}
 				</td>	
-				<td>{{row["description"]}}</td>	
+				<td class="d-none d-sm-table-cell">{{row["description"]}}</td>	
 			</tr>
 		{% endfor %}
 		</table></p>
