@@ -2,6 +2,12 @@
 {% block content %}
 <h1>Admin: Home</h1>
 
+
+{% for message in get_flashed_messages() %}
+<p><em>{{ message }}</em></p>
+{% endfor %}
+
+
 <p>This page allows you to create, read, update or delete (CRUD) some of the data stored on this website.</p>
 <p>&nbsp;</p>
 

@@ -95,9 +95,6 @@ def returnOrderByField(querystringParameter):
     return Delegate.name
 
 
-
-
-
 # Every page that is on the website will need an app.route defined here.
 # Most of them are pretty simple - they just render a template from the templates directory with very little effort.
 @app.route('/')
@@ -213,6 +210,16 @@ def get_adminCategoriesInsertUodate(pkid):
 def get_adminCategories():
   query = Category.query.filter(Category.id >= 0).order_by(Category.name)
   return render_template('adminCategories.html', title='Admin: Categories', description='', rows=query.all())
+
+
+@app.route(adminURL + '/feedback/delete/<int:pkid>', methods = ['GET'])
+def get_adminFeedbackDelete(pkid):
+  if pkid > 0:
+    deleteFeedback = Feedback.query.filter_by(id=pkid).first()
+    db.session.delete(deleteFeedback)
+    db.session.commit()
+    flash('Feedback (#' + str(pkid) + ') was successfully deleted.')
+    return redirect(url_for('get_adminHome'))
 
 
 @app.route(adminURL + '/feedback/<int:question>')
