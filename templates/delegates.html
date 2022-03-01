@@ -1,34 +1,36 @@
 
 {% extends "template.html" %}
 {% block content %}
-	<h1>Delegates</h1>
-	<p>Here you can find the list of delegates that are attending this years' PGS Careers Convention.</p>
-	<p>We have provided a <a href="/map">location map</a> showing where all delegates are located within the hall.</p>
+	<div class="table-responsive">
+		<h1>Delegates</h1>
+		<p>Here you can find the list of delegates that are attending this years' PGS Careers Convention.</p>
+		<p>We have provided a <a href="/map">location map</a> showing where all delegates are located within the hall.</p>
 
-	<!-- We need allow the visitor to sort by the columnns (apart from description as it doesn't make sense and you can filter by category.) -->
-	<p><table class="table table-bordered">
-		<thead>
-			<tr><th><a href="{{request.path}}?sort=name">Name</a></th><th><a href="{{request.path}}?sort=location">Location</a></th><th>Category</th><th>Description</th></tr>
-		</thead>
-		{% for row in rows %}
-		<tr>
-		   	<td><a href="/delegate/{{row["internalurl"]}}">{{row["name"]}}</a></td>
-		   	<td>{{row["location"]}}</td>	
-		   	<td>{% if row["category"] != "-" %}
-		   		<a title="Click here to flter the list of delegates in the same category." href="/delegates/{{row["category"]|replace(' ', '-')}}">{{row["category"]}}</a>
-		   {% else %}
-		   		{{row["category"]}}
-		   {% endif %}
-			</td>	
-		   	<td>{{row["description"]}}</td>	
-		</tr>
-	 {% endfor %}
-	</table></p>
+		<!-- We need allow the visitor to sort by the columnns (apart from description as it doesn't make sense and you can filter by category.) -->
+		<p><table class="table table-bordered">
+			<thead>
+				<tr><th><a href="{{request.path}}?sort=name">Name</a></th><th><a href="{{request.path}}?sort=location">Location</a></th><th>Category</th><th>Description</th></tr>
+			</thead>
+			{% for row in rows %}
+			<tr>
+				<td><a href="/delegate/{{row["internalurl"]}}">{{row["name"]}}</a></td>
+				<td>{{row["location"]}}</td>	
+				<td>{% if row["category"] != "-" %}
+					<a title="Click here to flter the list of delegates in the same category." href="/delegates/{{row["category"]|replace(' ', '-')}}">{{row["category"]}}</a>
+			{% else %}
+					{{row["category"]}}
+			{% endif %}
+				</td>	
+				<td>{{row["description"]}}</td>	
+			</tr>
+		{% endfor %}
+		</table></p>
 
-	{% if filteredView == 1 %}
-	<!-- We only need to show this link if the records are filtered. -->
-	<p>&nbsp;</p>
-	<p>Go back to the <a href="/delegates">full list of delegates</a>.</p>
-	{% endif %}
+		{% if filteredView == 1 %}
+		<!-- We only need to show this link if the records are filtered. -->
+		<p>&nbsp;</p>
+		<p>Go back to the <a href="/delegates">full list of delegates</a>.</p>
+		{% endif %}
+	</div>
 
 {% endblock %}
